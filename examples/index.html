@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+    <style>
+        .infinite-list {
+            width: 300px;
+            height: 600px;
+            background: #445599;
+            overflow-y: auto;
+        }
+
+        .infinite-list_item {
+            background: #995544;
+        }
+
+        .infinite-list_item + .infinite-list_item {
+            margin-top: 10px;
+        }
+
+        .infinite-list.__fetching::after {
+            content: 'loading more data';
+            display: block;
+            background: red;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="../node_modules/faker/build/build/faker.js"></script>
+    <script src="../lib/jquery.one-more-list.js"></script>
+</head>
+<body>
+    <div class="infinite-list"></div>
+    <button class="btn btn-primary" onclick="appendNewItem()">Append Item</button>
+    <button class="btn btn-primary" onclick="removeRandomItem()">Remove Random Item</button>
+    <script>
+        function appendNewItem() {
+            $('.infinite-list').list('appendItem', $('<div class="infinite-list_item"></div>').html('New item ' + faker.lorem.sentence()));
+        }
+
+        function removeRandomItem() {
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
+            var $items = $('.infinite-list_item');
+            $('.infinite-list').list('removeItem', $items[getRandomInt(0, $items.length - 1)]);
+        }
+
+        function TestStorage(direction) {
+            var _self = this;
+
+            this.lastId = 100;
+
+            this.prev = () => {
+                return new Promise(function(resolve, reject) {
+                    if (_self.lastId > 0) {
+                        var out = [];
+
+                        for (var i = _self.lastId; i > _self.lastId - 20 && i > 0; --i) {
+                            var item = $('<div class="infinite-list_item"></div>').html(i + ' ' + faker.lorem.sentence());
+
+                            if (direction == 'topDown') {
+                                out.push(item);
+                            } else {
+                                out.unshift(item);
+                            }
+                        }
+
+                        _self.lastId = i;
+
+                        resolve(out);
+                    } else {
+                        reject('error.no-more-data');
+                    }
+                });
+            };
+        }
+
+//        var direction = 'topDown';
+        var direction = 'bottomUp';
+        var storage = new TestStorage(direction);
+
+        for (var i = 120; i > 100; --i) {
+            var item = $('<div class="infinite-list_item"></div>').html(i + ' ' + faker.lorem.sentence());
+
+            if (direction == 'topDown') {
+                $('.infinite-list').append(item);
+            } else {
+                $('.infinite-list').prepend(item);
+            }
+        }
+
+        $('.infinite-list').list({
+            direction: direction,
+            storage: storage
+        })
+    </script>
+</body>
+</html>
