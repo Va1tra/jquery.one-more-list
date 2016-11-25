@@ -74,7 +74,7 @@ $('.infinite-list').list({
 #### Options
 - `direction` possible values: `topDown` or `bottomUp`
 - `storage` thing that retrieves new items. It must be an object
- ```js
+```js
     {
          type: 'net',
          url: yourUrlForRetrievingNewItems, 
@@ -83,7 +83,7 @@ $('.infinite-list').list({
             return getLastItemId(html);
          }
      }
- ```
+```
 or your own implementation with method `prev` returning Promise. Resolved Promise must returned anything
 that supported by jQuery.fn.append, jQuery.fn.prepend functions;
 
