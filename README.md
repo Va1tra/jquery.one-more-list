@@ -4,7 +4,7 @@ Another infinite list implementation.
 <h2>Install</h2>
 
 ```html
-<script src="..../jquery.one-more-list.js"></script>
+<script src="../jquery.one-more-list.js"></script>
 ```
 
 <h2>Example</h2>
